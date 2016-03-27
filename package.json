@@ -1,0 +1,14 @@
+{
+  "name": "bracketmaker",
+  "version": "1.0.0",
+  "description": "Makes a bracket",
+  "main": "bracketMaker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kane Stapler",
+  "license": "ISC",
+  "dependencies": {
+    "underscore": "^1.8.3"
+  }
+}
