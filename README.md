@@ -7,5 +7,5 @@
 git clone https://github.com/kanestapler/bracketmaker.git
 cd bracketmaker
 npm install
-node bracketmaker.js
+node src/bracketmaker.js
 ```

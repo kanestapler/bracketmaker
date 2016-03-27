@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var bracketsGenerated = 100000;
 
 //2015
 // var secondRoundMidwestResults2015 = [1, 8, 5, 4, 6, 3, 7, 2];
@@ -92,7 +93,7 @@ var bestEliteEightEast;
 var bestEliteEightMidwest;
 
 var start = new Date().getTime();
-while (count < 100000000) {
+while (count < bracketsGenerated) {
     count++;
     finalFour = getFinalFour();
     secondRoundCorrect = (gamesCorrect(secondRoundSouth, secondRoundSouthResults2015)
