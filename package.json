@@ -9,6 +9,7 @@
   "author": "Kane Stapler",
   "license": "ISC",
   "dependencies": {
+    "chance": "^1.0.1",
     "underscore": "^1.8.3"
   }
 }

@@ -1,6 +1,11 @@
 'use strict';
 declare function require(name: string);
+var Chance = require('chance');
+var chance = new Chance();
 var finalCorrectBracket2015 = require('./pastBrackets/2015.json');
+
+var count = 10000000;
+var i = 0;
 
 class Team {
     seed: number;
@@ -82,14 +87,28 @@ class Bracket {
     }
 }
 
-getStarted();
+var bestBracketScore = new Score(0,0,0,0,0,0,false);
 
-function getStarted() {
+while (i < count) {
+    var currentScore = doItAllForMeJustGiveMeTheScore();
+    if (currentScore.gamesWon > bestBracketScore.gamesWon) {
+        bestBracketScore = currentScore;
+    }
+    if (0 === i % 1000000) {
+        console.log(i);
+        console.log(bestBracketScore);
+    }
+    i++;
+}
+
+console.log(bestBracketScore);
+
+function doItAllForMeJustGiveMeTheScore() {
     var blankBracket = generateUnfilledBracketFromJson(finalCorrectBracket2015);
     var correctBracket = jsonBracketToBracketClass(finalCorrectBracket2015);
     var userBracket = fillOutBlankBracket(blankBracket);
     var finalScore = checkFullBracketWithCorrectOne(userBracket, correctBracket);
-    console.log(finalScore);
+    return finalScore;
 }
 
 function checkFullBracketWithCorrectOne(bracket: Bracket, correctBracket: Bracket) {
@@ -97,7 +116,6 @@ function checkFullBracketWithCorrectOne(bracket: Bracket, correctBracket: Bracke
     for (let i = 0; i < 8; i++) {//Check First Round
         for (let j = 0; j < 4; j++) {
             if (bracket.regions[j].winners.firstRound[i].name === correctBracket.regions[j].winners.firstRound[i].name) {
-                console.log(bracket.regions[j].winners.firstRound[i].name + " is correct");
                 returnScore.gamesWon++;
                 returnScore.firstRoundWon++;
             }
@@ -217,7 +235,7 @@ function generateUnfilledBracketFromJson(iBracket) {
 }
 
 function getWinner(teamOne: Team, teamTwo: Team, round: number) {
-    if (teamOne.seed < teamTwo.seed) {
+    if (chance.bool({likelihood: 50})) {
         return teamOne;
     } else {
         return teamTwo;
