@@ -144,12 +144,12 @@ function checkFullBracketWithCorrectOne(bracket: Bracket, correctBracket: Bracke
         }
     }
     for (let i = 0; i < 2; i++) {//Check Final Four
-        if (bracket.FF.winners.finalFour[i].name === bracket.FF.winners.finalFour[i].name) {
+        if (bracket.FF.winners.finalFour[i].name === correctBracket.FF.winners.finalFour[i].name) {
             returnScore.gamesWon++;
             returnScore.finalFourWon++;
         }
     }
-    if (bracket.FF.winners.championship.name === bracket.FF.winners.championship.name) {
+    if (bracket.FF.winners.championship.name === correctBracket.FF.winners.championship.name) {
         returnScore.gamesWon++;
         returnScore.championshipWon = true;
     }
@@ -211,7 +211,7 @@ function jsonBracketToBracketClass(iBracket) {
     for (let i = 0; i < 4; i++) {//Elite Eight
         let winningSeedNumber = iBracket.Regions[i].winners.fourthRound;
         returnBracket.regions[i].winners.fourthRound = returnBracket.regions[i].teams[winningSeedNumber-1];
-        returnBracket.FF.teams[i] = returnBracket.regions[i].teams[winningSeedNumber]
+        returnBracket.FF.teams[i] = returnBracket.regions[i].winners.fourthRound;
     }
     for (let i = 0; i < 4; i++) {//Final Four
         if (returnBracket.FF.teams[i].name === iBracket.FF.winners.finalFour[0] || returnBracket.FF.teams[i].name === iBracket.FF.winners.finalFour[1]) {

@@ -83,9 +83,9 @@ while (i < count) {
     if (currentScore.gamesWon > bestBracketScore.gamesWon) {
         bestBracketScore = currentScore;
     }
-    if (0 === i % 100000) {
+    if (0 === i % 1000000) {
         console.log(i);
-        console.log(chance.bool({ likelihood: 5 }));
+        console.log(bestBracketScore);
     }
     i++;
 }
@@ -130,12 +130,12 @@ function checkFullBracketWithCorrectOne(bracket, correctBracket) {
         }
     }
     for (var i_5 = 0; i_5 < 2; i_5++) {
-        if (bracket.FF.winners.finalFour[i_5].name === bracket.FF.winners.finalFour[i_5].name) {
+        if (bracket.FF.winners.finalFour[i_5].name === correctBracket.FF.winners.finalFour[i_5].name) {
             returnScore.gamesWon++;
             returnScore.finalFourWon++;
         }
     }
-    if (bracket.FF.winners.championship.name === bracket.FF.winners.championship.name) {
+    if (bracket.FF.winners.championship.name === correctBracket.FF.winners.championship.name) {
         returnScore.gamesWon++;
         returnScore.championshipWon = true;
     }
@@ -195,7 +195,7 @@ function jsonBracketToBracketClass(iBracket) {
     for (var i_13 = 0; i_13 < 4; i_13++) {
         var winningSeedNumber = iBracket.Regions[i_13].winners.fourthRound;
         returnBracket.regions[i_13].winners.fourthRound = returnBracket.regions[i_13].teams[winningSeedNumber - 1];
-        returnBracket.FF.teams[i_13] = returnBracket.regions[i_13].teams[winningSeedNumber];
+        returnBracket.FF.teams[i_13] = returnBracket.regions[i_13].winners.fourthRound;
     }
     for (var i_14 = 0; i_14 < 4; i_14++) {
         if (returnBracket.FF.teams[i_14].name === iBracket.FF.winners.finalFour[0] || returnBracket.FF.teams[i_14].name === iBracket.FF.winners.finalFour[1]) {
@@ -217,13 +217,10 @@ function generateUnfilledBracketFromJson(iBracket) {
     return returnBracket;
 }
 function getWinner(teamOne, teamTwo, round) {
-    if (randomBool()) {
+    if (chance.bool({ likelihood: 50 })) {
         return teamOne;
     }
     else {
         return teamTwo;
     }
-}
-function randomBool() {
-    return !!Math.floor(Math.random() * 2);
 }
