@@ -1,5 +1,5 @@
 'use strict';
-var finalCorrectBracket = require('./pastBrackets/2015.json');
+var finalCorrectBracket2015 = require('./pastBrackets/2015.json');
 var Team = (function () {
     function Team(iSeed, iName) {
         this.seed = iSeed;
@@ -73,62 +73,75 @@ var Bracket = (function () {
     }
     return Bracket;
 }());
+getStarted();
+function getStarted() {
+    var blankBracket = generateUnfilledBracketFromJson(finalCorrectBracket2015);
+    var correctBracket = jsonBracketToBracketClass(finalCorrectBracket2015);
+    var userBracket = fillOutBlankBracket(blankBracket);
+    var finalScore = checkFullBracketWithCorrectOne(userBracket, correctBracket);
+    console.log(finalScore);
+}
 function checkFullBracketWithCorrectOne(bracket, correctBracket) {
     var returnScore = new Score(0, 0, 0, 0, 0, 0, false);
     for (var i = 0; i < 8; i++) {
         for (var j = 0; j < 4; j++) {
-            console.log(bracket.regions[j].winners.firstRound);
             if (bracket.regions[j].winners.firstRound[i].name === correctBracket.regions[j].winners.firstRound[i].name) {
-                returnScore.firstRoundWon = returnScore.firstRoundWon + 1;
+                console.log(bracket.regions[j].winners.firstRound[i].name + " is correct");
+                returnScore.gamesWon++;
+                returnScore.firstRoundWon++;
             }
         }
     }
     for (var i = 0; i < 4; i++) {
         for (var j = 0; j < 4; j++) {
             if (bracket.regions[j].winners.secondRound[i].name === correctBracket.regions[j].winners.secondRound[i].name) {
-                returnScore.secondRoundWon = returnScore.secondRoundWon + 1;
+                returnScore.gamesWon++;
+                returnScore.secondRoundWon++;
             }
         }
     }
     for (var i = 0; i < 2; i++) {
         for (var j = 0; j < 4; j++) {
             if (bracket.regions[j].winners.thirdRound[i].name === correctBracket.regions[j].winners.thirdRound[i].name) {
-                returnScore.sweetSixteenWon = returnScore.sweetSixteenWon + 1;
+                returnScore.gamesWon++;
+                returnScore.sweetSixteenWon++;
             }
         }
     }
     for (var i = 0; i < 4; i++) {
         if (bracket.regions[i].winners.fourthRound.name === correctBracket.regions[i].winners.fourthRound.name) {
-            returnScore.eliteEightWon = returnScore.eliteEightWon + 1;
+            returnScore.gamesWon++;
+            returnScore.eliteEightWon++;
         }
     }
     for (var i = 0; i < 2; i++) {
         if (bracket.FF.winners.finalFour[i].name === bracket.FF.winners.finalFour[i].name) {
-            returnScore.finalFourWon = returnScore.finalFourWon + 1;
+            returnScore.gamesWon++;
+            returnScore.finalFourWon++;
         }
     }
     if (bracket.FF.winners.championship.name === bracket.FF.winners.championship.name) {
+        returnScore.gamesWon++;
         returnScore.championshipWon = true;
     }
     return returnScore;
 }
-console.log(checkFullBracketWithCorrectOne(fillOutBlankBracket(generateUnfilledBracketFromJson(finalCorrectBracket)), jsonBracketToBracketClass(finalCorrectBracket)));
 function fillOutBlankBracket(iBracket) {
     var returnBracket = new Bracket();
     returnBracket = iBracket;
-    for (var i = 0; i < 16; i = i + 2) {
+    for (var i = 0; i < 8; i++) {
         for (var j = 0; j < 4; j++) {
-            returnBracket.regions[j].winners.firstRound[i] = getWinner(returnBracket.regions[j].teams[i], returnBracket.regions[j].teams[i + 1], 1);
+            returnBracket.regions[j].winners.firstRound[i] = getWinner(returnBracket.regions[j].teams[i], returnBracket.regions[j].teams[15 - i], 1);
         }
     }
     for (var i = 0; i < 8; i = i + 2) {
         for (var j = 0; j < 4; j++) {
-            returnBracket.regions[j].winners.secondRound[i] = getWinner(returnBracket.regions[j].winners.firstRound[i], returnBracket.regions[j].winners.firstRound[i + 1], 2);
+            returnBracket.regions[j].winners.secondRound[i / 2] = getWinner(returnBracket.regions[j].winners.firstRound[i], returnBracket.regions[j].winners.firstRound[i + 1], 2);
         }
     }
     for (var i = 0; i < 4; i = i + 2) {
         for (var j = 0; j < 4; j++) {
-            returnBracket.regions[j].winners.thirdRound[i] = getWinner(returnBracket.regions[j].winners.secondRound[i], returnBracket.regions[j].winners.secondRound[i + 1], 3);
+            returnBracket.regions[j].winners.thirdRound[i / 2] = getWinner(returnBracket.regions[j].winners.secondRound[i], returnBracket.regions[j].winners.secondRound[i + 1], 3);
         }
     }
     for (var i = 0; i < 2; i = i + 2) {
@@ -149,24 +162,26 @@ function jsonBracketToBracketClass(iBracket) {
     for (var i = 0; i < 8; i++) {
         for (var j = 0; j < 4; j++) {
             var winningSeedNumber = iBracket.Regions[j].winners.firstRound[i];
-            returnBracket.regions[j].winners.firstRound[i] = returnBracket.regions[j].teams[winningSeedNumber];
+            console.log(winningSeedNumber);
+            console.log(returnBracket.regions[j].teams[winningSeedNumber - 1]);
+            returnBracket.regions[j].winners.firstRound[i] = returnBracket.regions[j].teams[winningSeedNumber - 1];
         }
     }
     for (var i = 0; i < 4; i++) {
         for (var j = 0; j < 4; j++) {
             var winningSeedNumber = iBracket.Regions[j].winners.secondRound[i];
-            returnBracket.regions[j].winners.secondRound[i] = returnBracket.regions[j].teams[winningSeedNumber];
+            returnBracket.regions[j].winners.secondRound[i] = returnBracket.regions[j].teams[winningSeedNumber - 1];
         }
     }
     for (var i = 0; i < 2; i++) {
         for (var j = 0; j < 4; j++) {
             var winningSeedNumber = iBracket.Regions[j].winners.thirdRound[i];
-            returnBracket.regions[j].winners.thirdRound[i] = returnBracket.regions[j].teams[winningSeedNumber];
+            returnBracket.regions[j].winners.thirdRound[i] = returnBracket.regions[j].teams[winningSeedNumber - 1];
         }
     }
     for (var i = 0; i < 4; i++) {
         var winningSeedNumber = iBracket.Regions[i].winners.fourthRound;
-        returnBracket.regions[i].winners.fourthRound = returnBracket.regions[i].teams[winningSeedNumber];
+        returnBracket.regions[i].winners.fourthRound = returnBracket.regions[i].teams[winningSeedNumber - 1];
         returnBracket.FF.teams[i] = returnBracket.regions[i].teams[winningSeedNumber];
     }
     for (var i = 0; i < 4; i++) {
@@ -189,5 +204,10 @@ function generateUnfilledBracketFromJson(iBracket) {
     return returnBracket;
 }
 function getWinner(teamOne, teamTwo, round) {
-    return teamOne;
+    if (teamOne.seed < teamTwo.seed) {
+        return teamOne;
+    }
+    else {
+        return teamTwo;
+    }
 }
