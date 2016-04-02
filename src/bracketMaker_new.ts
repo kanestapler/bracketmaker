@@ -4,7 +4,7 @@ var Chance = require('chance');
 var chance = new Chance();
 var finalCorrectBracket2015 = require('./pastBrackets/2015.json');
 
-var count = 10000000;
+var count = 1000;
 var i = 0;
 
 class Team {
@@ -24,6 +24,7 @@ class Score {
     eliteEightWon: number;
     finalFourWon: number;
     championshipWon: boolean;
+    totalScore: number;
     constructor(iGamesWon: number, iFirstRoundWon: number, iSecondRoundWon: number, iSweetSixteen: number, iEliteEight: number, iFinalFour: number, ichampionshipWon: boolean) {
         this.gamesWon = iGamesWon;
         this.firstRoundWon = iFirstRoundWon;
@@ -32,6 +33,7 @@ class Score {
         this.eliteEightWon = iEliteEight;
         this.finalFourWon = iFinalFour;
         this.championshipWon = ichampionshipWon;
+        this.totalScore = null;
     }
 }
 
@@ -91,9 +93,7 @@ var bestBracketScore = new Score(0,0,0,0,0,0,false);
 
 while (i < count) {
     var currentScore = doItAllForMeJustGiveMeTheScore();
-    if (currentScore.gamesWon > bestBracketScore.gamesWon) {
-        bestBracketScore = currentScore;
-    }
+    bestBracketScore = exponentialScoreCompare(currentScore, bestBracketScore);
     if (0 === i % 1000000) {
         console.log(i);
         console.log(bestBracketScore);
@@ -102,6 +102,72 @@ while (i < count) {
 }
 
 console.log(bestBracketScore);
+
+function fibonacciScoreCompare(scoreOne: Score, scoreTwo: Score) {
+    var scoreOneTotal = 0;
+    var scoreTwoTotal = 0;
+    scoreOneTotal = scoreOne.firstRoundWon;
+    scoreTwoTotal = scoreTwo.firstRoundWon;
+    scoreOneTotal = scoreOneTotal + scoreOne.secondRoundWon*2;
+    scoreTwoTotal = scoreTwoTotal + scoreTwo.secondRoundWon*2;
+    scoreOneTotal = scoreOneTotal + scoreOne.sweetSixteenWon*3;
+    scoreTwoTotal = scoreTwoTotal + scoreTwo.sweetSixteenWon*3;
+    scoreOneTotal = scoreOneTotal + scoreOne.eliteEightWon*5;
+    scoreTwoTotal = scoreTwoTotal + scoreTwo.eliteEightWon*5;
+    scoreOneTotal = scoreOneTotal + scoreOne.finalFourWon*8;
+    scoreTwoTotal = scoreTwoTotal + scoreTwo.finalFourWon*8;
+    if (scoreOne.championshipWon) {
+        scoreOneTotal = scoreOneTotal + 13;
+    }
+    if (scoreTwo.championshipWon) {
+        scoreTwoTotal = scoreTwoTotal + 13;
+    }
+    scoreOne.totalScore = scoreOneTotal;
+    scoreTwo.totalScore = scoreTwoTotal;
+    if (scoreOneTotal > scoreTwoTotal) {
+        return scoreOne;
+    } else {
+        return scoreTwo;
+    }
+}
+
+function onePointScoreCompare(scoreOne: Score, scoreTwo: Score) {
+    scoreOne.totalScore = scoreOne.gamesWon;
+    scoreTwo.totalScore = scoreTwo.gamesWon;
+    if (scoreOne.gamesWon > scoreTwo.gamesWon) {
+        return scoreOne;
+    } else {
+        return scoreTwo;
+    }
+}
+
+function exponentialScoreCompare(scoreOne: Score, scoreTwo: Score) {
+    var scoreOneTotal = 0;
+    var scoreTwoTotal = 0;
+    scoreOneTotal = scoreOne.firstRoundWon;
+    scoreTwoTotal = scoreTwo.firstRoundWon;
+    scoreOneTotal = scoreOneTotal + scoreOne.secondRoundWon*2;
+    scoreTwoTotal = scoreTwoTotal + scoreTwo.secondRoundWon*2;
+    scoreOneTotal = scoreOneTotal + scoreOne.sweetSixteenWon*4;
+    scoreTwoTotal = scoreTwoTotal + scoreTwo.sweetSixteenWon*4;
+    scoreOneTotal = scoreOneTotal + scoreOne.eliteEightWon*8;
+    scoreTwoTotal = scoreTwoTotal + scoreTwo.eliteEightWon*8;
+    scoreOneTotal = scoreOneTotal + scoreOne.finalFourWon*16;
+    scoreTwoTotal = scoreTwoTotal + scoreTwo.finalFourWon*16;
+    if (scoreOne.championshipWon) {
+        scoreOneTotal = scoreOneTotal + 32;
+    }
+    if (scoreTwo.championshipWon) {
+        scoreTwoTotal = scoreTwoTotal + 32;
+    }
+    scoreOne.totalScore = scoreOneTotal;
+    scoreTwo.totalScore = scoreTwoTotal;
+    if (scoreOneTotal > scoreTwoTotal) {
+        return scoreOne;
+    } else {
+        return scoreTwo;
+    }
+}
 
 function doItAllForMeJustGiveMeTheScore() {
     var blankBracket = generateUnfilledBracketFromJson(finalCorrectBracket2015);
@@ -235,9 +301,26 @@ function generateUnfilledBracketFromJson(iBracket) {
 }
 
 function getWinner(teamOne: Team, teamTwo: Team, round: number) {
-    if (chance.bool({likelihood: 50})) {
-        return teamOne;
+    var seedDifference = Math.abs(teamOne.seed - teamTwo.seed);
+    var timesToRun = Math.ceil(log2(seedDifference));
+    var lowSeed;
+    var highSeed;
+    if (teamOne.seed > teamTwo.seed) {
+        lowSeed = teamOne;
+        highSeed = teamTwo;
     } else {
-        return teamTwo;
+        highSeed = teamOne;
+        lowSeed = teamTwo;
     }
+    for (let i = 0; i < timesToRun; i++) {
+        if (chance.bool({likelihood: 50})) {
+            return highSeed;
+        }
+    }
+    return lowSeed;
+}
+
+function log2(i: number) {
+    var output = Math.log(i) / Math.log(2);
+    return output;
 }
