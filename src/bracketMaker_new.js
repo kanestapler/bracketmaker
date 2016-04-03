@@ -75,136 +75,139 @@ var Bracket = (function () {
                 championship: null
             }
         };
+        this.score = new Score(0, 0, 0, 0, 0, 0, false);
     }
     return Bracket;
 }());
-var bestBracketScore = new Score(0, 0, 0, 0, 0, 0, false);
+var bestBracket = new Bracket();
 while (i < count) {
-    var currentScore = doItAllForMeJustGiveMeTheScore();
-    bestBracketScore = exponentialScoreCompare(currentScore, bestBracketScore);
+    var currentBracket = doItAllForMeJustGiveMeTheBracket();
+    bestBracket = exponentialScoreCompare(currentBracket, bestBracket);
     if (0 === i % 1000000) {
         console.log(i);
-        console.log(bestBracketScore);
+        console.log(bestBracket.score);
     }
     i++;
 }
-console.log(bestBracketScore);
-function fibonacciScoreCompare(scoreOne, scoreTwo) {
+console.log(bestBracket.score);
+function fibonacciScoreCompare(bracketOne, bracketTwo) {
     var scoreOneTotal = 0;
     var scoreTwoTotal = 0;
-    scoreOneTotal = scoreOne.firstRoundWon;
-    scoreTwoTotal = scoreTwo.firstRoundWon;
-    scoreOneTotal = scoreOneTotal + scoreOne.secondRoundWon * 2;
-    scoreTwoTotal = scoreTwoTotal + scoreTwo.secondRoundWon * 2;
-    scoreOneTotal = scoreOneTotal + scoreOne.sweetSixteenWon * 3;
-    scoreTwoTotal = scoreTwoTotal + scoreTwo.sweetSixteenWon * 3;
-    scoreOneTotal = scoreOneTotal + scoreOne.eliteEightWon * 5;
-    scoreTwoTotal = scoreTwoTotal + scoreTwo.eliteEightWon * 5;
-    scoreOneTotal = scoreOneTotal + scoreOne.finalFourWon * 8;
-    scoreTwoTotal = scoreTwoTotal + scoreTwo.finalFourWon * 8;
-    if (scoreOne.championshipWon) {
+    scoreOneTotal = bracketOne.score.firstRoundWon;
+    scoreTwoTotal = bracketTwo.score.firstRoundWon;
+    scoreOneTotal = scoreOneTotal + bracketOne.score.secondRoundWon * 2;
+    scoreTwoTotal = scoreTwoTotal + bracketTwo.score.secondRoundWon * 2;
+    scoreOneTotal = scoreOneTotal + bracketOne.score.sweetSixteenWon * 3;
+    scoreTwoTotal = scoreTwoTotal + bracketTwo.score.sweetSixteenWon * 3;
+    scoreOneTotal = scoreOneTotal + bracketOne.score.eliteEightWon * 5;
+    scoreTwoTotal = scoreTwoTotal + bracketTwo.score.eliteEightWon * 5;
+    scoreOneTotal = scoreOneTotal + bracketOne.score.finalFourWon * 8;
+    scoreTwoTotal = scoreTwoTotal + bracketTwo.score.finalFourWon * 8;
+    if (bracketOne.score.championshipWon) {
         scoreOneTotal = scoreOneTotal + 13;
     }
-    if (scoreTwo.championshipWon) {
+    if (bracketTwo.score.championshipWon) {
         scoreTwoTotal = scoreTwoTotal + 13;
     }
-    scoreOne.totalScore = scoreOneTotal;
-    scoreTwo.totalScore = scoreTwoTotal;
+    bracketOne.score.totalScore = scoreOneTotal;
+    bracketTwo.score.totalScore = scoreTwoTotal;
     if (scoreOneTotal > scoreTwoTotal) {
-        return scoreOne;
+        return bracketOne;
     }
     else {
-        return scoreTwo;
+        return bracketTwo;
     }
 }
-function onePointScoreCompare(scoreOne, scoreTwo) {
-    scoreOne.totalScore = scoreOne.gamesWon;
-    scoreTwo.totalScore = scoreTwo.gamesWon;
-    if (scoreOne.gamesWon > scoreTwo.gamesWon) {
-        return scoreOne;
+function onePointScoreCompare(bracketOne, bracketTwo) {
+    bracketOne.score.totalScore = bracketOne.score.gamesWon;
+    bracketTwo.score.totalScore = bracketTwo.score.gamesWon;
+    if (bracketOne.score.gamesWon > bracketTwo.score.gamesWon) {
+        return bracketOne;
     }
     else {
-        return scoreTwo;
+        return bracketTwo;
     }
 }
-function exponentialScoreCompare(scoreOne, scoreTwo) {
+function exponentialScoreCompare(bracketOne, bracketTwo) {
     var scoreOneTotal = 0;
     var scoreTwoTotal = 0;
-    scoreOneTotal = scoreOne.firstRoundWon;
-    scoreTwoTotal = scoreTwo.firstRoundWon;
-    scoreOneTotal = scoreOneTotal + scoreOne.secondRoundWon * 2;
-    scoreTwoTotal = scoreTwoTotal + scoreTwo.secondRoundWon * 2;
-    scoreOneTotal = scoreOneTotal + scoreOne.sweetSixteenWon * 4;
-    scoreTwoTotal = scoreTwoTotal + scoreTwo.sweetSixteenWon * 4;
-    scoreOneTotal = scoreOneTotal + scoreOne.eliteEightWon * 8;
-    scoreTwoTotal = scoreTwoTotal + scoreTwo.eliteEightWon * 8;
-    scoreOneTotal = scoreOneTotal + scoreOne.finalFourWon * 16;
-    scoreTwoTotal = scoreTwoTotal + scoreTwo.finalFourWon * 16;
-    if (scoreOne.championshipWon) {
+    scoreOneTotal = bracketOne.score.firstRoundWon;
+    scoreTwoTotal = bracketTwo.score.firstRoundWon;
+    scoreOneTotal = scoreOneTotal + bracketOne.score.secondRoundWon * 2;
+    scoreTwoTotal = scoreTwoTotal + bracketTwo.score.secondRoundWon * 2;
+    scoreOneTotal = scoreOneTotal + bracketOne.score.sweetSixteenWon * 4;
+    scoreTwoTotal = scoreTwoTotal + bracketTwo.score.sweetSixteenWon * 4;
+    scoreOneTotal = scoreOneTotal + bracketOne.score.eliteEightWon * 8;
+    scoreTwoTotal = scoreTwoTotal + bracketTwo.score.eliteEightWon * 8;
+    scoreOneTotal = scoreOneTotal + bracketOne.score.finalFourWon * 16;
+    scoreTwoTotal = scoreTwoTotal + bracketTwo.score.finalFourWon * 16;
+    if (bracketOne.score.championshipWon) {
         scoreOneTotal = scoreOneTotal + 32;
     }
-    if (scoreTwo.championshipWon) {
+    if (bracketTwo.score.championshipWon) {
         scoreTwoTotal = scoreTwoTotal + 32;
     }
-    scoreOne.totalScore = scoreOneTotal;
-    scoreTwo.totalScore = scoreTwoTotal;
+    bracketOne.score.totalScore = scoreOneTotal;
+    bracketTwo.score.totalScore = scoreTwoTotal;
     if (scoreOneTotal > scoreTwoTotal) {
-        return scoreOne;
+        return bracketOne;
     }
     else {
-        return scoreTwo;
+        return bracketTwo;
     }
 }
-function doItAllForMeJustGiveMeTheScore() {
+function doItAllForMeJustGiveMeTheBracket() {
     var blankBracket = generateUnfilledBracketFromJson(finalCorrectBracket2015);
     var correctBracket = jsonBracketToBracketClass(finalCorrectBracket2015);
     var userBracket = fillOutBlankBracket(blankBracket);
-    var finalScore = checkFullBracketWithCorrectOne(userBracket, correctBracket);
-    return finalScore;
+    var finalBracket = checkFullBracketWithCorrectOne(userBracket, correctBracket);
+    return finalBracket;
 }
 function checkFullBracketWithCorrectOne(bracket, correctBracket) {
-    var returnScore = new Score(0, 0, 0, 0, 0, 0, false);
+    var returnBracket = bracket;
+    var finalScore = new Score(0, 0, 0, 0, 0, 0, false);
     for (var i_1 = 0; i_1 < 8; i_1++) {
         for (var j = 0; j < 4; j++) {
             if (bracket.regions[j].winners.firstRound[i_1].name === correctBracket.regions[j].winners.firstRound[i_1].name) {
-                returnScore.gamesWon++;
-                returnScore.firstRoundWon++;
+                finalScore.gamesWon++;
+                finalScore.firstRoundWon++;
             }
         }
     }
     for (var i_2 = 0; i_2 < 4; i_2++) {
         for (var j = 0; j < 4; j++) {
             if (bracket.regions[j].winners.secondRound[i_2].name === correctBracket.regions[j].winners.secondRound[i_2].name) {
-                returnScore.gamesWon++;
-                returnScore.secondRoundWon++;
+                finalScore.gamesWon++;
+                finalScore.secondRoundWon++;
             }
         }
     }
     for (var i_3 = 0; i_3 < 2; i_3++) {
         for (var j = 0; j < 4; j++) {
             if (bracket.regions[j].winners.thirdRound[i_3].name === correctBracket.regions[j].winners.thirdRound[i_3].name) {
-                returnScore.gamesWon++;
-                returnScore.sweetSixteenWon++;
+                finalScore.gamesWon++;
+                finalScore.sweetSixteenWon++;
             }
         }
     }
     for (var i_4 = 0; i_4 < 4; i_4++) {
         if (bracket.regions[i_4].winners.fourthRound.name === correctBracket.regions[i_4].winners.fourthRound.name) {
-            returnScore.gamesWon++;
-            returnScore.eliteEightWon++;
+            finalScore.gamesWon++;
+            finalScore.eliteEightWon++;
         }
     }
     for (var i_5 = 0; i_5 < 2; i_5++) {
         if (bracket.FF.winners.finalFour[i_5].name === correctBracket.FF.winners.finalFour[i_5].name) {
-            returnScore.gamesWon++;
-            returnScore.finalFourWon++;
+            finalScore.gamesWon++;
+            finalScore.finalFourWon++;
         }
     }
     if (bracket.FF.winners.championship.name === correctBracket.FF.winners.championship.name) {
-        returnScore.gamesWon++;
-        returnScore.championshipWon = true;
+        finalScore.gamesWon++;
+        finalScore.championshipWon = true;
     }
-    return returnScore;
+    returnBracket.score = finalScore;
+    return returnBracket;
 }
 function fillOutBlankBracket(iBracket) {
     var returnBracket = new Bracket();
