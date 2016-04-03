@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var bracketsGenerated = 100000;
 
 //2015

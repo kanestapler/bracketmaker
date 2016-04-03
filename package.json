@@ -10,6 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "chance": "^1.0.1",
-    "underscore": "^1.8.3"
+    "lodash": "^4.7.0"
   }
 }
