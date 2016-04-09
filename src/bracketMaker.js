@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var bracketsGenerated = 100000;
 
 //2015
@@ -304,7 +304,7 @@ function getFinalFour() {
             }
         }
 
-        function returnWinner(times) {//False means favorite won
+        function returnWinner(times) {//False means dog won
             for (var i = 0; i < times; i++) {
                 if (randomTrueFalse()) {
                     return false;
